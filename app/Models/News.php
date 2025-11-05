@@ -33,6 +33,11 @@ class News extends Model
 
     protected $table = 'news';
 
+    protected $fillable = [
+        'title',
+        'content',
+    ];
+
     // Relations
 
     function author(): BelongsTo

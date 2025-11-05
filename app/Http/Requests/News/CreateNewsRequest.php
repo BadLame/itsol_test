@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Http\Requests\News;
+
+use App\Models\Dto\News\CreateNewsDto;
+use App\Models\User;
+use Illuminate\Foundation\Http\FormRequest;
+
+/**
+ * @property int $user_id
+ * @property string $title
+ * @property string $text
+ */
+class CreateNewsRequest extends FormRequest
+{
+    function rules(): array
+    {
+        return [
+            'user_id' => 'sometimes|integer|exists:users,id',
+            'title' => 'required|string|between:3,255',
+            'text' => 'required|string|min:3',
+        ];
+    }
+
+    function after(): array
+    {
+        return [
+            fn () => $this->merge(['user_id' => $this->user_id ?: User::query()->inRandomOrder()->value('id')]),
+        ];
+    }
+
+    function toDto(): CreateNewsDto
+    {
+        return new CreateNewsDto(
+            $this->title,
+            $this->text,
+            $this->user_id
+        );
+    }
+}

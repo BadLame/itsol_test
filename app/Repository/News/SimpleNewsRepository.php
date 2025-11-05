@@ -2,12 +2,24 @@
 
 namespace App\Repository\News;
 
+use App\Models\Dto\News\CreateNewsDto;
 use App\Models\News;
 use App\Models\Query\NewsQuery;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 
 class SimpleNewsRepository implements NewsRepository
 {
+    function create(CreateNewsDto $dto): News
+    {
+        $news = new News;
+        $news->title = $dto->title;
+        $news->content = $dto->content;
+        $news->author()->associate($dto->user_id);
+        $news->save();
+
+        return $news;
+    }
+
     function publicPaginatedList(int $perPage = 10, ?string $pageCursor = null): CursorPaginator
     {
         return $this->query()->publicList()->cursorPaginate(cursor: $pageCursor);

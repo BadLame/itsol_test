@@ -4,9 +4,11 @@ namespace Tests\Feature\Http\Controllers;
 
 use App\Http\Controllers\NewsController;
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\NewsResource;
 use App\Http\Resources\UserResource;
 use App\Models\Comment;
 use App\Models\News;
+use App\Models\User;
 use Tests\TestCase;
 
 class NewsControllerTest extends TestCase
@@ -91,7 +93,6 @@ class NewsControllerTest extends TestCase
 
         $this->getJson(route('news.show', $news))
             ->assertSuccessful()
-            ->dump()
             ->assertJsonFragment([
                 'id' => $randComment->id,
                 'is_deleted' => true,
@@ -101,5 +102,21 @@ class NewsControllerTest extends TestCase
                     (new CommentResource($randCommentAns->load('author')))->toArray(request()),
                 ],
             ]);
+    }
+
+    function testCreateCreatesNews()
+    {
+        $request = [
+            'user_id' => (int) User::factory()->create()->id,
+            'title' => fake()->colorName(),
+            'text' => fake()->text(),
+        ];
+
+        $response = $this->postJson(route('news.create'), $request)
+            ->assertSuccessful();
+        $news = News::find($response->json('data.id'));
+
+        $response->assertJsonFragment(json_decode((new NewsResource($news))->toJson(), true));
+        $this->assertDatabaseHas('news', $request);
     }
 }

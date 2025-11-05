@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\News\CreateNewsRequest;
 use App\Http\Resources\NewsResource;
 use App\Repository\News\NewsRepository;
 use Dedoc\Scramble\Attributes\QueryParameter;
@@ -15,6 +16,14 @@ class NewsController extends Controller
         protected NewsRepository $repo,
     )
     {
+    }
+
+    /** Создать новость */
+    function create(CreateNewsRequest $request)
+    {
+        return new NewsResource(
+            $this->repo->create($request->toDto())
+        );
     }
 
     /** Получение списка новостей */

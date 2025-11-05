@@ -11,5 +11,8 @@ class DatabaseSeeder extends Seeder
 
     function run(): void
     {
+        $this->callOnce([
+            UsersSeeder::class,
+        ]);
     }
 }
