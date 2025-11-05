@@ -10,7 +10,14 @@ class SimpleNewsRepository implements NewsRepository
 {
     function publicPaginatedList(int $perPage = 10, ?string $pageCursor = null): CursorPaginator
     {
-        return $this->query()->forPublicViewers()->cursorPaginate(cursor: $pageCursor);
+        return $this->query()->publicList()->cursorPaginate(cursor: $pageCursor);
+    }
+
+    function publicShow(int $id): News
+    {
+        /** @var News $news */
+        $news = $this->query()->publicDetailed()->findOrFail($id);
+        return $news;
     }
 
     protected function query(): NewsQuery

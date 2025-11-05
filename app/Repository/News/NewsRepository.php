@@ -15,4 +15,7 @@ interface NewsRepository
      * @return CursorPaginator<News>
      */
     function publicPaginatedList(int $perPage = 10, ?string $pageCursor = null): CursorPaginator;
+
+    /** Показ новости со связанными данными */
+    function publicShow(int $id): News;
 }

@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Models\Query\NewsQuery;
 use Database\Factories\NewsFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -18,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon $created_at
  *
  * @property User $author
+ * @property Collection<Comment> $comments
  *
  * @method static NewsFactory factory($count = null, $state = [])
  * @method static NewsQuery|News query()
@@ -35,6 +38,11 @@ class News extends Model
     function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     // Misc

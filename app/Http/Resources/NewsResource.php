@@ -16,10 +16,15 @@ class NewsResource extends JsonResource
         return [
             'id' => $n->id,
             'author_id' => $n->user_id,
-            'author' => $this->whenLoaded('author', fn () => new UserResource($n->author)),
             'title' => $n->title,
             'content' => $n->content,
             'created_at' => $n->created_at->timestamp,
+
+            'author' => $this->whenLoaded('author', fn () => new UserResource($n->author)),
+            'comments' => $this->whenLoaded(
+                'comments',
+                fn () => CommentResource::collection($n->comments)
+            ),
         ];
     }
 }

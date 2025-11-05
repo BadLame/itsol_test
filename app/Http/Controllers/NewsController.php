@@ -30,4 +30,17 @@ class NewsController extends Controller
             $this->repo->publicPaginatedList(static::PER_PAGE, $request->query('cursor'))
         );
     }
+
+    /**
+     * Показать новость с комментариями
+     *
+     * @param int $id ID новости для показа
+     * @return NewsResource
+     */
+    function show(int $id): NewsResource
+    {
+        return new NewsResource(
+            $this->repo->publicShow($id)
+        );
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Comment;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -18,5 +19,12 @@ class NewsFactory extends Factory
             'title' => fake()->colorName(),
             'content' => fake()->text(),
         ];
+    }
+
+    function withComments(): self
+    {
+        return $this->afterCreating(function (News $news) {
+            Comment::factory(rand(1, 3))->withCommentable($news)->create();
+        });
     }
 }
