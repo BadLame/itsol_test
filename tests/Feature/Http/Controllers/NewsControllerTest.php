@@ -38,7 +38,8 @@ class NewsControllerTest extends TestCase
 
         // Проверить работу пагинации
         $this->getJson(route('news.list', ['cursor' => $response->json('meta.next_cursor')]))
-            ->assertSuccessful()
+            ->dump()
+            ->assertSuccessful() // fixme тут валится
             ->assertJsonFragment([
                 'id' => $shouldBeOnSecondPage->id,
                 'title' => $shouldBeOnSecondPage->title,
@@ -47,7 +48,7 @@ class NewsControllerTest extends TestCase
 
     function testShowDisplaysNewsWithCommentsAndAnswers()
     {
-        $news = News::factory()->withComments()->create();
+        $news = News::factory()->withComments(NewsController::PER_PAGE + 1)->create();
         /** @var Comment $randComment */
         $randComment = $news->comments->random();
         $randCommentAns = Comment::factory()->withCommentable($randComment)->create();
@@ -56,6 +57,12 @@ class NewsControllerTest extends TestCase
             ->assertSuccessful()
             ->assertJsonStructure([
                 'data' => [
+                    'id',
+                    'author_id',
+                    'author' => ['id', 'name'],
+                    'title',
+                    'content',
+                    'created_at',
                     'comments' => [
                         '*' => [
                             'id',
@@ -67,6 +74,8 @@ class NewsControllerTest extends TestCase
                         ],
                     ],
                 ],
+                'links' => ['first', 'last', 'prev', 'next'],
+                'meta' => ['path', 'per_page', 'next_cursor', 'prev_cursor'],
             ])
             ->assertJsonFragment([
                 'id' => $randComment->id,
@@ -107,7 +116,7 @@ class NewsControllerTest extends TestCase
     function testCreateCreatesNews()
     {
         $request = [
-            'user_id' => (int) User::factory()->create()->id,
+            'user_id' => (int)User::factory()->create()->id,
             'title' => fake()->colorName(),
             'text' => fake()->text(),
         ];
@@ -117,6 +126,10 @@ class NewsControllerTest extends TestCase
         $news = News::find($response->json('data.id'));
 
         $response->assertJsonFragment(json_decode((new NewsResource($news))->toJson(), true));
-        $this->assertDatabaseHas('news', $request);
+        $this->assertDatabaseHas('news', [
+            'user_id' => $request['user_id'],
+            'title' => $request['title'],
+            'content' => $request['text'],
+        ]);
     }
 }

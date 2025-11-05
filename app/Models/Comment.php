@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Query\CommentsQuery;
 use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -26,6 +27,7 @@ use Illuminate\Support\Carbon;
  * @property News|Comment|null $commentable
  *
  * @method static CommentFactory factory($count = null, $state = [])
+ * @method static CommentsQuery|Comment query()
  */
 class Comment extends Model
 {
@@ -63,5 +65,12 @@ class Comment extends Model
     function isDeleted(): bool
     {
         return !is_null($this->deleted_at);
+    }
+
+    // Misc
+
+    function newEloquentBuilder($query): CommentsQuery
+    {
+        return new CommentsQuery($query);
     }
 }
