@@ -21,10 +21,12 @@ class NewsFactory extends Factory
         ];
     }
 
-    function withComments(): self
+    function withComments(?int $count = null): self
     {
-        return $this->afterCreating(function (News $news) {
-            Comment::factory(rand(1, 3))->withCommentable($news)->create();
+        return $this->afterCreating(function (News $news) use ($count) {
+            Comment::factory($count ?: rand(1, 3))
+                ->withCommentable($news)
+                ->create();
         });
     }
 }

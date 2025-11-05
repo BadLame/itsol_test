@@ -3,6 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Http\Controllers\NewsController;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\UserResource;
 use App\Models\Comment;
 use App\Models\News;
@@ -56,6 +57,7 @@ class NewsControllerTest extends TestCase
                     'comments' => [
                         '*' => [
                             'id',
+                            'is_deleted',
                             'author',
                             'answers',
                             'content',
@@ -69,11 +71,34 @@ class NewsControllerTest extends TestCase
                 'answers' => [
                     [
                         'id' => $randCommentAns->id,
+                        'is_deleted' => $randCommentAns->isDeleted(),
                         'content' => $randCommentAns->content,
                         'created_at' => $randCommentAns->created_at->timestamp,
                         'author' => (new UserResource($randCommentAns->author))->toArray(request()),
                         'answers' => [],
                     ],
+                ],
+            ]);
+    }
+
+    function testDeletedCommentDontShowsAuthorAndContent()
+    {
+        $news = News::factory()->withComments(1)->create();
+        /** @var Comment $randComment */
+        $randComment = $news->comments->random();
+        $randComment->update(['deleted_at' => now()]);
+        $randCommentAns = Comment::factory()->withCommentable($randComment)->create();
+
+        $this->getJson(route('news.show', $news))
+            ->assertSuccessful()
+            ->dump()
+            ->assertJsonFragment([
+                'id' => $randComment->id,
+                'is_deleted' => true,
+                'author' => null,
+                'content' => '',
+                'answers' => [
+                    (new CommentResource($randCommentAns->load('author')))->toArray(request()),
                 ],
             ]);
     }

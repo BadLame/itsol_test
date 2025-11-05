@@ -19,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property string $content
  * @property Carbon $updated_at
  * @property Carbon $created_at
+ * @property Carbon $deleted_at
  *
  * @property Collection<Comment> $answers
  * @property User $author
@@ -29,6 +30,11 @@ use Illuminate\Support\Carbon;
 class Comment extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'content',
+        'deleted_at',
+    ];
 
     // Relations
 
@@ -47,12 +53,15 @@ class Comment extends Model
         return $this->morphTo();
     }
 
-    // Misc
+    // Methods
 
-    protected static function booted(): void
+    function delete(): void
     {
-        static::deleting(function (self $comment) {
-            // todo Удалять ID у ответов на комментарий
-        });
+        $this->deleted_at = now();
+    }
+
+    function isDeleted(): bool
+    {
+        return !is_null($this->deleted_at);
     }
 }

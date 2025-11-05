@@ -12,14 +12,17 @@ class CommentResource extends JsonResource
     {
         /** @var Comment $c */
         $c = $this->resource;
+        $isDeleted = $c->isDeleted();
+
         return [
             'id' => $c->id,
-            'content' => $c->content,
+            'is_deleted' => $isDeleted,
+            'content' => $isDeleted ? '' : $c->content,
             'created_at' => $c->created_at->timestamp,
 
             'author' => $this->whenLoaded(
                 'author',
-                fn () => $c->author ? new UserResource($c->author) : null, // Пользователь может быть удалён
+                fn () => ($c->author && !$c->isDeleted()) ? new UserResource($c->author) : null, // Пользователь может быть удалён
                 null
             ),
             'answers' => $this->whenLoaded(
