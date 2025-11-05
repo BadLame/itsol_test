@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Query\NewsQuery;
 use Database\Factories\NewsFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,6 +20,9 @@ use Illuminate\Support\Carbon;
  * @property User $author
  *
  * @method static NewsFactory factory($count = null, $state = [])
+ * @method static NewsQuery|News query()
+ *
+ * @mixin NewsQuery
  */
 class News extends Model
 {
@@ -31,5 +35,12 @@ class News extends Model
     function author(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    // Misc
+
+    function newEloquentBuilder($query): NewsQuery
+    {
+        return new NewsQuery($query);
     }
 }

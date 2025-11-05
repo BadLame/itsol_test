@@ -3,12 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\NewsResource;
-use App\Models\News;
+use App\Repository\News\NewsRepository;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Http\Request;
 
 class NewsController extends Controller
 {
     const PER_PAGE = 10;
+
+    function __construct(
+        protected NewsRepository $repo,
+    )
+    {
+    }
 
     /** Получение списка новостей */
     #[QueryParameter(
@@ -17,10 +24,10 @@ class NewsController extends Controller
         required: false,
         type: 'string'
     )]
-    function list()
+    function list(Request $request)
     {
         return NewsResource::collection(
-            News::query()->orderByDesc('id')->cursorPaginate(static::PER_PAGE)
+            $this->repo->publicPaginatedList(static::PER_PAGE, $request->query('cursor'))
         );
     }
 }

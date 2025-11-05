@@ -21,6 +21,7 @@ class NewsControllerTest extends TestCase
                     '*' => [
                         'id',
                         'author_id',
+                        'author' => ['id', 'name'],
                         'title',
                         'content',
                         'created_at',
