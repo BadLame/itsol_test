@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Interfaces\HasPaginatingCursor;
 use App\Models\Queries\CommentsQuery;
-use App\Models\Traits\CursorName;
 use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,9 +29,9 @@ use Illuminate\Support\Carbon;
  * @method static CommentFactory factory($count = null, $state = [])
  * @method static CommentsQuery|Comment query()
  */
-class Comment extends Model implements HasPaginatingCursor
+class Comment extends Model
 {
-    use CursorName, HasFactory;
+    use HasFactory;
 
     // Дефолтные отношения, которые нужны для отображения пользователю
     const PUBLIC_RELATIONS = ['author'];

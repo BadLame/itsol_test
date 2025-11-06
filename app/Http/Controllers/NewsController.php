@@ -32,7 +32,7 @@ class NewsController extends Controller
 
     /** Получение списка новостей */
     #[QueryParameter(
-        'news_cursor',
+        'cursor',
         description: 'Курсор для получения следующей/предыдущей страницы',
         required: false,
         type: 'string'

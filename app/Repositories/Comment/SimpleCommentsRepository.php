@@ -19,7 +19,7 @@ class SimpleCommentsRepository implements CommentsRepository
             ->forPublicView()
             ->ofEntity($entityId, $entityType)
             ->withAnswers(true, $nestingLevel)
-            ->cursorPaginate($perPage, cursorName: Comment::getCursorName());
+            ->cursorPaginate($perPage);
     }
 
     function findOrFail(int $id): Comment

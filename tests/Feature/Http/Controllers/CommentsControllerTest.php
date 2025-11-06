@@ -119,7 +119,7 @@ class CommentsControllerTest extends TestCase
             ->assertJsonMissing(['id' => $commentOnSecondPage->id]);
 
         $nextPageRequest = array_merge($request, [
-            Comment::getCursorName() => $response->json('meta.next_cursor'),
+            'cursor' => $response->json('meta.next_cursor'),
         ]);
         $this->getJson(route('comments.list', $nextPageRequest))
             ->assertSuccessful()

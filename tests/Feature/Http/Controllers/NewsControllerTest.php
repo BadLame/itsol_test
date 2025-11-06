@@ -35,7 +35,7 @@ class NewsControllerTest extends TestCase
 
         // Проверить работу пагинации
         $this->getJson(route('news.list', [
-            News::getCursorName() => $response->json('meta.next_cursor'),
+            'cursor' => $response->json('meta.next_cursor'),
         ]))
             ->assertSuccessful()
             ->assertJsonFragment([

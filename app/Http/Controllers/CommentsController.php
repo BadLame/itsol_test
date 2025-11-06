@@ -67,7 +67,7 @@ class CommentsController extends Controller
     }
 
     /** Получить пагинированный список комментариев для commentable сущности */
-    #[QueryParameter('comments_cursor', 'Курсор для перехода по страницам', type: 'string')]
+    #[QueryParameter('cursor', 'Курсор для перехода по страницам', type: 'string')]
     #[Response(404, 'Commentable сущность не найдена')]
     function list(CommentsListRequest $request): AnonymousResourceCollection
     {

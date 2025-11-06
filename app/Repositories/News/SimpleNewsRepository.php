@@ -19,7 +19,7 @@ class SimpleNewsRepository implements NewsRepository
     {
         return $this->query()
             ->publicList()
-            ->cursorPaginate(perPage: $perPage, cursorName: News::getCursorName());
+            ->cursorPaginate(perPage: $perPage);
     }
 
     function publicShow(int $id): News
