@@ -11,6 +11,6 @@ class VideoPostQuery extends Builder
     /** Упорядочить и подгрузить отношения для просмотра пользователем */
     function publicList(): static
     {
-        return $this->orderByDesc('video_posts.id')->with(['author']);
+        return $this->orderByDesc('video_posts.id')->with(['author', 'video']);
     }
 }

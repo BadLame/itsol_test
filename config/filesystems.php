@@ -38,6 +38,15 @@ return [
             'report' => false,
         ],
 
+        'video_posts' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/vps'),
+            'url' => env('APP_URL').'/storage/vps',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

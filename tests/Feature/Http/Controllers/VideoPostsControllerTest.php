@@ -8,8 +8,6 @@ use Tests\TestCase;
 
 class VideoPostsControllerTest extends TestCase
 {
-    // todo Обновить тесты после добавления файлов
-
     function testListReturnsPaginatedVideoPosts(): void
     {
         $vps = VideoPost::factory(VideoPostsController::PER_PAGE + 1)->create();
@@ -24,6 +22,7 @@ class VideoPostsControllerTest extends TestCase
                         'id',
                         'author_id',
                         'author' => ['id', 'name'],
+                        'video' => ['alt', 'url'],
                         'title',
                         'created_at',
                     ],

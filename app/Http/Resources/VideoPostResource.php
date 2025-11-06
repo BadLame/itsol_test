@@ -24,6 +24,11 @@ class VideoPostResource extends JsonResource
                 fn () => $vp->author ? new UserResource($vp->author) : null,
                 null
             ),
+            'video' => $this->whenLoaded(
+                'video',
+                fn () => new MediaResource($vp->video->first()),
+                null
+            ),
         ];
     }
 }

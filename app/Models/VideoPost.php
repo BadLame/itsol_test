@@ -9,7 +9,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Carbon;
+use Plank\Mediable\Media;
+use Plank\Mediable\Mediable;
+use Plank\Mediable\MediableInterface;
 
 /**
  * @property int $id
@@ -20,15 +24,18 @@ use Illuminate\Support\Carbon;
  *
  * @property User|null $author
  * @property Collection<Comment> $comments
+ * @property Collection<Media> $video В коллекции всегда только одно видео
  *
  * @method static VideoPostFactory factory($count = null, $state = [])
  * @method static VideoPostQuery|VideoPost query()
  *
  * @mixin VideoPostQuery
  */
-class VideoPost extends Model
+class VideoPost extends Model implements MediableInterface
 {
-    use HasFactory;
+    use HasFactory, Mediable;
+
+    const VIDEO_TAG = 'video';
 
     protected $fillable = [
         'title',
@@ -44,6 +51,11 @@ class VideoPost extends Model
     function comments(): MorphMany
     {
         return $this->morphMany(Comment::class, 'commentable');
+    }
+
+    function video(): MorphToMany
+    {
+        return $this->media()->limit(1);
     }
 
     // Misc
