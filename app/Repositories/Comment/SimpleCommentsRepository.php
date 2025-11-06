@@ -3,7 +3,7 @@
 namespace App\Repositories\Comment;
 
 use App\Models\Comment;
-use App\Models\Query\CommentsQuery;
+use App\Models\Queries\CommentsQuery;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 
 class SimpleCommentsRepository implements CommentsRepository

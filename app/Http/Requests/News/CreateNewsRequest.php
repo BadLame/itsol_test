@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\News;
 
-use App\Models\Dto\News\CreateNewsDto;
+use App\Models\Dtos\News\CreateNewsDto;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 

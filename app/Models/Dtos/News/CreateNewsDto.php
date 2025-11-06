@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Dto\News;
+namespace App\Models\Dtos\News;
 
 /** DTO с необходимыми для создания новости данными */
 class CreateNewsDto

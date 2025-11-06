@@ -3,8 +3,8 @@
 namespace App\Http\Requests\Comment;
 
 use App\Models\Comment;
-use App\Models\Dto\Comment\CreateCommentDto;
-use App\Models\Enum\Commentables;
+use App\Models\Dtos\Comment\CreateCommentDto;
+use App\Models\Enums\Commentables;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;

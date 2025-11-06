@@ -8,7 +8,7 @@ use App\Http\Requests\Comment\DeleteCommentRequest;
 use App\Http\Requests\Comment\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
-use App\Models\Dto\Comment\UpdateCommentDto;
+use App\Models\Dtos\Comment\UpdateCommentDto;
 use App\Repositories\Comment\CommentsRepository;
 use App\Services\Comment\CommentsService;
 use Dedoc\Scramble\Attributes\PathParameter;

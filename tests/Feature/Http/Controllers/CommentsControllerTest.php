@@ -5,7 +5,7 @@ namespace Tests\Feature\Http\Controllers;
 use App\Http\Controllers\CommentsController;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
-use App\Models\Enum\Commentables;
+use App\Models\Enums\Commentables;
 use App\Models\News;
 use Illuminate\Support\Arr;
 use Tests\TestCase;

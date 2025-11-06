@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Comment;
-use App\Models\Enum\Commentables;
+use App\Models\Enums\Commentables;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;

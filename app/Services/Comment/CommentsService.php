@@ -3,8 +3,8 @@
 namespace App\Services\Comment;
 
 use App\Models\Comment;
-use App\Models\Dto\Comment\CreateCommentDto;
-use App\Models\Dto\Comment\UpdateCommentDto;
+use App\Models\Dtos\Comment\CreateCommentDto;
+use App\Models\Dtos\Comment\UpdateCommentDto;
 use App\Repositories\Comment\CommentsRepository;
 use Illuminate\Validation\UnauthorizedException;
 

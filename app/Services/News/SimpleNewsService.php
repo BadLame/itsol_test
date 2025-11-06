@@ -2,7 +2,7 @@
 
 namespace App\Services\News;
 
-use App\Models\Dto\News\CreateNewsDto;
+use App\Models\Dtos\News\CreateNewsDto;
 use App\Models\News;
 
 class SimpleNewsService extends NewsService

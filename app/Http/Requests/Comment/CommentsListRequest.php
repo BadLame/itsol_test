@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Comment;
 
 use App\Models\Comment;
-use App\Models\Enum\Commentables;
+use App\Models\Enums\Commentables;
 use App\Models\News;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;

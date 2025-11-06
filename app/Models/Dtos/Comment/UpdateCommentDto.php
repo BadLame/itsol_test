@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Dto\Comment;
+namespace App\Models\Dtos\Comment;
 
 use App\Models\Comment;
 

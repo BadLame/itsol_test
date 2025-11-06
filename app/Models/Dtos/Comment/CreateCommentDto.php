@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Dto\Comment;
+namespace App\Models\Dtos\Comment;
 
 /** Хранит данные для создания комментария */
 class CreateCommentDto

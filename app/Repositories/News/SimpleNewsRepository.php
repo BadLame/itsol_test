@@ -3,7 +3,7 @@
 namespace App\Repositories\News;
 
 use App\Models\News;
-use App\Models\Query\NewsQuery;
+use App\Models\Queries\NewsQuery;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 
 class SimpleNewsRepository implements NewsRepository

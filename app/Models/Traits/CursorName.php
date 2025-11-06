@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models\Trait;
+namespace App\Models\Traits;
 
 use App\Models\Comment;
-use App\Models\Enum\CursorNames;
+use App\Models\Enums\CursorNames;
 use App\Models\News;
 use InvalidArgumentException;
 

@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Interface\HasPaginatingCursor;
-use App\Models\Query\NewsQuery;
-use App\Models\Trait\CursorName;
+use App\Models\Interfaces\HasPaginatingCursor;
+use App\Models\Queries\NewsQuery;
+use App\Models\Traits\CursorName;
 use Database\Factories\NewsFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

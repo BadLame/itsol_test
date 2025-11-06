@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Enum;
+namespace App\Models\Enums;
 
 use App\Models\Comment;
 use App\Models\News;

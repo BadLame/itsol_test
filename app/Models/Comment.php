@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Models\Interface\HasPaginatingCursor;
-use App\Models\Query\CommentsQuery;
-use App\Models\Trait\CursorName;
+use App\Models\Interfaces\HasPaginatingCursor;
+use App\Models\Queries\CommentsQuery;
+use App\Models\Traits\CursorName;
 use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Query;
+namespace App\Models\Queries;
 
 use App\Models\News;
 use Illuminate\Database\Eloquent\Builder;
