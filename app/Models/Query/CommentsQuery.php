@@ -11,19 +11,41 @@ use InvalidArgumentException;
 /** @mixin Comment */
 class CommentsQuery extends Builder
 {
-    /** Выборка комментариев commentable сущности */
-    function ofEntity(News|Comment $entity): static
+    /** Упорядочить и подгрузить отношения для показа пользователю */
+    function forPublicView(): static
+    {
+        return $this->with(['author'])
+            ->orderByDesc('comments.id');
+    }
+
+    /**
+     * Выборка комментариев/ответов для commentable сущности
+     * @param int $entityId
+     * @param class-string<News|Comment> $entityType
+     * @return CommentsQuery
+     */
+    function ofEntity(int $entityId, string $entityType): static
     {
         return $this->where(
             fn (self $q) => $q->where([
-                'comments.commentable_id' => $entity->id,
-                'comments.commentable_type' => $entity::class,
+                'comments.commentable_id' => $entityId,
+                'comments.commentable_type' => $entityType,
             ])
         );
     }
 
-    /** Выборка ответов для ответов до заданной глубины */
-    function withAnswers(int $nestingLevel = 1, array $loadCommentsRelations = []): static
+    /**
+     * Выборка ответов для ответов до заданной глубины
+     * @param bool $forPublicView Если true - автоматически упорядочит и загрузит отношения для отображения пользователю
+     * @param int $nestingLevel
+     * @param array $loadCommentsRelations
+     * @return CommentsQuery
+     */
+    function withAnswers(
+        bool  $forPublicView,
+        int   $nestingLevel = 3,
+        array $loadCommentsRelations = [],
+    ): static
     {
         if ($nestingLevel <= 0) throw new InvalidArgumentException(
             'Уровень вложенности комментариев не может быть меньше 1'
@@ -34,7 +56,10 @@ class CommentsQuery extends Builder
         // Строим цепочку вложенных отношений снизу вверх
         for ($i = 0; $i < $nestingLevel; $i++) {
             $currentWith = $relations;
-            $relations = ['answers' => fn (MorphMany $q) => $q->with($currentWith)];
+            $relations = [
+                'answers' => fn (MorphMany $q) => $q->with($currentWith)
+                    ->when($forPublicView, fn (MorphMany|CommentsQuery $q) => $q->forPublicView()),
+            ];
 
             // Добавляем дополнительные отношения на каждом уровне, кроме последнего
             if ($i < $nestingLevel - 1) {

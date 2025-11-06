@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Comment;
+use App\Models\Enum\Commentables;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -14,14 +15,11 @@ class CommentFactory extends Factory
 
     function definition(): array
     {
-        $commentable = Arr::random([
-            News::class,
-            Comment::class,
-        ]);
+        $commentable = Arr::random(Commentables::values());
 
         return [
             'user_id' => User::factory(),
-            'commentable_id' => $commentable::query()->inRandomOrder()->value('id'),
+            'commentable_id' => $commentable::factory(),
             'commentable_type' => $commentable,
 
             'content' => fake()->text(),

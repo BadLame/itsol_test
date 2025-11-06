@@ -16,6 +16,7 @@ class CreateNewsRequest extends FormRequest
     function rules(): array
     {
         return [
+            /** Если не передан - будет взят случайный из существующих */
             'user_id' => 'sometimes|integer|exists:users,id',
             'title' => 'required|string|between:3,255',
             'text' => 'required|string|min:3',

@@ -62,27 +62,6 @@ class NewsControllerTest extends TestCase
             ]);
     }
 
-//    function testDeletedCommentDontShowsAuthorAndContent() // fixme move to another test class
-//    {
-//        $news = News::factory()->withComments(1)->create();
-//        /** @var Comment $randComment */
-//        $randComment = $news->comments->random();
-//        $randComment->update(['deleted_at' => now()]);
-//        $randCommentAns = Comment::factory()->withCommentable($randComment)->create();
-//
-//        $this->getJson(route('news.show', $news))
-//            ->assertSuccessful()
-//            ->assertJsonFragment([
-//                'id' => $randComment->id,
-//                'is_deleted' => true,
-//                'author' => null,
-//                'content' => '',
-//                'answers' => [
-//                    (new CommentResource($randCommentAns->load('author')))->toArray(request()),
-//                ],
-//            ]);
-//    }
-
     function testCreateCreatesNews()
     {
         $request = [
