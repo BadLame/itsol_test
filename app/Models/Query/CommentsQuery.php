@@ -14,7 +14,7 @@ class CommentsQuery extends Builder
     /** Упорядочить и подгрузить отношения для показа пользователю */
     function forPublicView(): static
     {
-        return $this->with(['author'])
+        return $this->with(Comment::PUBLIC_RELATIONS)
             ->orderByDesc('comments.id');
     }
 

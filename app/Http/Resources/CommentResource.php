@@ -18,6 +18,7 @@ class CommentResource extends JsonResource
             'id' => $c->id,
             'is_deleted' => $isDeleted,
             'content' => $isDeleted ? '' : $c->content,
+            'updated_at' => $c->updated_at->timestamp,
             'created_at' => $c->created_at->timestamp,
 
             'author' => $this->whenLoaded(

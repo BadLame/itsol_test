@@ -12,4 +12,7 @@ Route::name('news.')->prefix('/news/')->group(function () {
 
 Route::name('comments.')->prefix('/comments/')->group(function () {
     Route::get('/', [CommentsController::class, 'list'])->name('list');
+    Route::post('/', [CommentsController::class, 'create'])->name('create');
+    Route::patch('/{id}', [CommentsController::class, 'update'])->name('update')->where('id', '[0-9]+');
+    Route::delete('/{id}', [CommentsController::class, 'delete'])->name('delete')->where('id', '[0-9]+');
 });

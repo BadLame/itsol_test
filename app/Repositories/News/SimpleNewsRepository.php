@@ -1,20 +1,15 @@
 <?php
 
-namespace App\Repository\News;
+namespace App\Repositories\News;
 
-use App\Models\Dto\News\CreateNewsDto;
 use App\Models\News;
 use App\Models\Query\NewsQuery;
 use Illuminate\Contracts\Pagination\CursorPaginator;
 
 class SimpleNewsRepository implements NewsRepository
 {
-    function create(CreateNewsDto $dto): News
+    function create(News $news): News
     {
-        $news = new News;
-        $news->title = $dto->title;
-        $news->content = $dto->content;
-        $news->author()->associate($dto->user_id);
         $news->save();
 
         return $news;

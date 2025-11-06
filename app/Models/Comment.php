@@ -35,6 +35,9 @@ class Comment extends Model implements HasPaginatingCursor
 {
     use CursorName, HasFactory;
 
+    // Дефолтные отношения, которые нужны для отображения пользователю
+    const PUBLIC_RELATIONS = ['author'];
+
     protected $fillable = [
         'content',
         'deleted_at',

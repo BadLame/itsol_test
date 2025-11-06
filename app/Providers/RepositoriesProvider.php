@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use App\Repository\Comment\CommentsRepository;
-use App\Repository\Comment\SimpleCommentsRepository;
-use App\Repository\News\NewsRepository;
-use App\Repository\News\SimpleNewsRepository;
+use App\Repositories\Comment\CommentsRepository;
+use App\Repositories\Comment\SimpleCommentsRepository;
+use App\Repositories\News\NewsRepository;
+use App\Repositories\News\SimpleNewsRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoriesProvider extends ServiceProvider

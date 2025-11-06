@@ -8,7 +8,7 @@ class CreateNewsDto
     function __construct(
         public string $title,
         public string $content,
-        public int $user_id,
+        public int    $userId,
     )
     {
     }

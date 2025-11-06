@@ -12,7 +12,17 @@ use Tests\TestCase;
 
 class CommentsControllerTest extends TestCase
 {
-    const COMMENTS_RESPONSE_STRUCT = [
+    const SINGLE_COMMENT_RESPONSE_STRUCT = [
+        'data' => [
+            'id',
+            'is_deleted',
+            'content',
+            'created_at',
+            'author' => ['id', 'name'],
+            'answers',
+        ],
+    ];
+    const PAGINATED_COMMENTS_RESPONSE_STRUCT = [
         'data' => [
             '*' => [
                 'id',
@@ -29,6 +39,8 @@ class CommentsControllerTest extends TestCase
 
     // todo Добавить тест на получение комментариев для видео поста, когда появится
 
+    // List
+
     function testListReturnsAnswersForComment(): void
     {
         $comment = Comment::factory()->create();
@@ -40,7 +52,7 @@ class CommentsControllerTest extends TestCase
 
         $response = $this->getJson(route('comments.list', $request))
             ->assertSuccessful()
-            ->assertJsonStructure(static::COMMENTS_RESPONSE_STRUCT);
+            ->assertJsonStructure(static::PAGINATED_COMMENTS_RESPONSE_STRUCT);
 
         $commentAnswers->each(
             fn (Comment $c) => $response->assertJsonFragment(['id' => $c->id])
@@ -58,7 +70,7 @@ class CommentsControllerTest extends TestCase
 
         $response = $this->getJson(route('comments.list', $request))
             ->assertSuccessful()
-            ->assertJsonStructure(self::COMMENTS_RESPONSE_STRUCT);
+            ->assertJsonStructure(self::PAGINATED_COMMENTS_RESPONSE_STRUCT);
 
         $newsComments->each(
             fn (Comment $c) => $response->assertJsonFragment(['id' => $c->id])
@@ -93,7 +105,9 @@ class CommentsControllerTest extends TestCase
     function testListPaginationIsWorking(): void
     {
         $entity = $this->generateCommentable();
-        $comments = Comment::factory(CommentsController::PER_PAGE + 1)->withCommentable($entity)->create();
+        $comments = Comment::factory(CommentsController::PER_PAGE + 1)
+            ->withCommentable($entity)
+            ->create();
         $request = [
             'entity_id' => $entity->id,
             'entity_type' => $entity::class,
@@ -105,24 +119,102 @@ class CommentsControllerTest extends TestCase
             ->assertJsonMissing(['id' => $commentOnSecondPage->id]);
 
         $nextPageRequest = array_merge($request, [
-            $entity::getCursorName() => $response->json('meta.next_cursor'),
+            Comment::getCursorName() => $response->json('meta.next_cursor'),
         ]);
         $this->getJson(route('comments.list', $nextPageRequest))
             ->assertSuccessful()
             ->assertJsonFragment(['id' => $commentOnSecondPage->id]);
     }
 
-    function testListReturnsNotFoundForNonExistingEntity(): void
+    // Create
+
+    function testCreateCreatesComment(): void
     {
-        $entity = $this->generateCommentable();
+        $commentable = $this->generateCommentable();
         $request = [
-            'entity_id' => $entity::query()->max('id') + 1, // отправить несуществующий ID
-            'entity_type' => $entity::class,
+            'commentable_id' => $commentable->id,
+            'commentable_type' => $commentable::class,
+            'text' => fake()->text(),
         ];
 
-        $this->getJson(route('comments.list', $request))
-            ->assertNotFound();
+        $this->postJson(route('comments.create'), $request)
+            ->assertSuccessful()
+            ->assertJsonStructure(static::SINGLE_COMMENT_RESPONSE_STRUCT);
+
+        $this->assertDatabaseHas('comments', [
+            'commentable_id' => $request['commentable_id'],
+            'commentable_type' => $request['commentable_type'],
+            'content' => $request['text'],
+        ]);
     }
+
+    // Update
+
+    function testUpdateUpdatesComment(): void
+    {
+        $comment = Comment::factory()->create();
+        $request = [
+            'user_id' => $comment->user_id,
+            'text' => fake()->text(),
+        ];
+
+        $this->patchJson(route('comments.update', $comment->id), $request)
+            ->assertSuccessful()
+            ->assertJsonStructure(static::SINGLE_COMMENT_RESPONSE_STRUCT);
+
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+            'content' => $request['text'],
+        ]);
+    }
+
+    function testUpdateCantUpdateCommentOfAnotherUser()
+    {
+        $comment = Comment::factory()->create();
+        $request = [
+            'user_id' => $comment->user_id + 1,
+            'text' => fake()->text(),
+        ];
+
+        $this->patchJson(route('comments.update', $comment->id), $request)
+            ->assertForbidden();
+        // Проверить, что контент не поменялся
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+            'content' => $comment->content,
+        ]);
+    }
+
+    // Delete
+
+    function testDeleteDeletesComment(): void
+    {
+        $comment = Comment::factory()->create();
+        $request = [
+            'user_id' => $comment->user_id,
+        ];
+
+        $this->deleteJson(route('comments.delete', $comment->id), $request)
+            ->assertSuccessful();
+        $this->assertNotNull($comment->fresh()->deleted_at);
+    }
+
+    function testDeleteCantDeleteCommentOfAnotherUser()
+    {
+        $comment = Comment::factory()->create();
+        $request = [
+            'user_id' => $comment->user_id + 1,
+        ];
+
+        $this->deleteJson(route('comments.delete', $comment->id), $request)
+            ->assertForbidden();
+        $this->assertDatabaseHas('comments', [
+            'id' => $comment->id,
+            'deleted_at' => null,
+        ]);
+    }
+
+    // Misc
 
     function testDeletedCommentDontShowsAuthorAndContent()
     {
@@ -152,6 +244,8 @@ class CommentsControllerTest extends TestCase
                 ],
             ]);
     }
+
+    // Helpers
 
     protected function generateCommentable(): News|Comment
     {

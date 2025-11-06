@@ -11,12 +11,10 @@ use Illuminate\Validation\Rule;
 /**
  * @property int $entity_id
  * @property class-string<News|Comment> $entity_type
+ * @property int|null $comments_nesting_level
  */
 class CommentsListRequest extends FormRequest
 {
-    public ?int $comments_nesting_level;
-    public News|Comment|null $entity;
-
     function rules(): array
     {
         return [
@@ -24,18 +22,6 @@ class CommentsListRequest extends FormRequest
             'entity_type' => ['required', 'string', Rule::enum(Commentables::class)],
             /** До какого уровня вложенности прогружать комментарии */
             'comments_nesting_level' => 'sometimes|integer|min:1',
-        ];
-    }
-
-    function after(): array
-    {
-        return [
-            function () {
-                if (in_array($this->entity_type, Commentables::values()) && $this->entity_id) {
-                    $this->entity = $this->entity_type::query()->findOrFail($this->entity_id);
-                }
-            },
-            fn () => $this->comments_nesting_level = $this->input('comments_nesting_level'),
         ];
     }
 }

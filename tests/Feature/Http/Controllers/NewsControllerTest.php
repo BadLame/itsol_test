@@ -62,6 +62,14 @@ class NewsControllerTest extends TestCase
             ]);
     }
 
+    function testShowReturnsNotFoundForNonExistingNews(): void
+    {
+        $nonExistingId = News::query()->max('id') + 1;
+
+        $this->getJson(route('news.show', $nonExistingId))
+            ->assertNotFound();
+    }
+
     function testCreateCreatesNews()
     {
         $request = [
