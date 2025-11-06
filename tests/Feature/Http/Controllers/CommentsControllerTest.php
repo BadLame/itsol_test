@@ -7,6 +7,7 @@ use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Models\Enums\Commentables;
 use App\Models\News;
+use App\Models\VideoPost;
 use Illuminate\Support\Arr;
 use Tests\TestCase;
 
@@ -36,8 +37,6 @@ class CommentsControllerTest extends TestCase
         'links' => ['first', 'last', 'prev', 'next'],
         'meta' => ['path', 'per_page', 'next_cursor', 'prev_cursor'],
     ];
-
-    // todo Добавить тест на получение комментариев для видео поста, когда появится
 
     // List
 
@@ -70,9 +69,27 @@ class CommentsControllerTest extends TestCase
 
         $response = $this->getJson(route('comments.list', $request))
             ->assertSuccessful()
-            ->assertJsonStructure(self::PAGINATED_COMMENTS_RESPONSE_STRUCT);
+            ->assertJsonStructure(static::PAGINATED_COMMENTS_RESPONSE_STRUCT);
 
         $newsComments->each(
+            fn (Comment $c) => $response->assertJsonFragment(['id' => $c->id])
+        );
+    }
+
+    function testListReturnsCommentsForVideoPost(): void
+    {
+        $post = VideoPost::factory()->create();
+        $postComments = Comment::factory(rand(1, 3))->withCommentable($post)->create();
+        $request = [
+            'entity_id' => $post->id,
+            'entity_type' => VideoPost::class,
+        ];
+
+        $response = $this->getJson(route('comments.list', $request))
+            ->assertSuccessful()
+            ->assertJsonStructure(static::PAGINATED_COMMENTS_RESPONSE_STRUCT);
+
+        $postComments->each(
             fn (Comment $c) => $response->assertJsonFragment(['id' => $c->id])
         );
     }
@@ -218,7 +235,7 @@ class CommentsControllerTest extends TestCase
 
     function testDeletedCommentDontShowsAuthorAndContent()
     {
-        /** @var News|Comment $entity */
+        /** @var News|Comment|VideoPost $entity */
         $entity = $this->generateCommentable();
         $comments = Comment::factory(rand(1, 3))->withCommentable($entity)->create();
         $request = [
@@ -247,7 +264,7 @@ class CommentsControllerTest extends TestCase
 
     // Helpers
 
-    protected function generateCommentable(): News|Comment
+    protected function generateCommentable(): News|Comment|VideoPost
     {
         return Arr::random(Commentables::values())::factory()->create();
     }

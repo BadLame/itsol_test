@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Enums\Commentables;
 use App\Models\News;
 use App\Models\User;
+use App\Models\VideoPost;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 
@@ -26,7 +27,7 @@ class CommentFactory extends Factory
         ];
     }
 
-    function withCommentable(News|Comment $commentable): self
+    function withCommentable(News|Comment|VideoPost $commentable): self
     {
         return $this->state([
             'commentable_id' => $commentable->id,

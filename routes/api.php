@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\VideoPostsController;
 use Illuminate\Support\Facades\Route;
 
 Route::name('news.')->prefix('/news/')->group(function () {
@@ -15,4 +16,8 @@ Route::name('comments.')->prefix('/comments/')->group(function () {
     Route::post('/', [CommentsController::class, 'create'])->name('create');
     Route::patch('/{id}', [CommentsController::class, 'update'])->name('update')->where('id', '[0-9]+');
     Route::delete('/{id}', [CommentsController::class, 'delete'])->name('delete')->where('id', '[0-9]+');
+});
+
+Route::name('video_posts.')->prefix('/video_posts/')->group(function () {
+    Route::get('/', [VideoPostsController::class, 'list'])->name('list');
 });

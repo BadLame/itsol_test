@@ -4,6 +4,7 @@ namespace App\Models\Queries;
 
 use App\Models\Comment;
 use App\Models\News;
+use App\Models\VideoPost;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use InvalidArgumentException;
@@ -21,7 +22,7 @@ class CommentsQuery extends Builder
     /**
      * Выборка комментариев/ответов для commentable сущности
      * @param int $entityId
-     * @param class-string<News|Comment> $entityType
+     * @param class-string<News|Comment|VideoPost> $entityType
      * @return CommentsQuery
      */
     function ofEntity(int $entityId, string $entityType): static

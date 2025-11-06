@@ -5,12 +5,13 @@ namespace App\Http\Requests\Comment;
 use App\Models\Comment;
 use App\Models\Enums\Commentables;
 use App\Models\News;
+use App\Models\VideoPost;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
  * @property int $entity_id
- * @property class-string<News|Comment> $entity_type
+ * @property class-string<News|Comment|VideoPost> $entity_type
  * @property int|null $comments_nesting_level
  */
 class CommentsListRequest extends FormRequest

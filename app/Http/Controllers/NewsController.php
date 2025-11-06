@@ -31,12 +31,7 @@ class NewsController extends Controller
     }
 
     /** Получение списка новостей */
-    #[QueryParameter(
-        'cursor',
-        description: 'Курсор для получения следующей/предыдущей страницы',
-        required: false,
-        type: 'string'
-    )]
+    #[QueryParameter('cursor', 'Курсор для получения следующей/предыдущей страницы', type: 'string')]
     function list(): AnonymousResourceCollection
     {
         return NewsResource::collection(

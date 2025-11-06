@@ -15,7 +15,7 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property int $commentable_id
- * @property class-string<News|Comment> $commentable_type
+ * @property class-string<News|Comment|VideoPost> $commentable_type
  * @property int $user_id
  * @property string $content
  * @property Carbon $updated_at
@@ -24,7 +24,7 @@ use Illuminate\Support\Carbon;
  *
  * @property Collection<Comment> $answers
  * @property User $author
- * @property News|Comment|null $commentable
+ * @property News|Comment|VideoPost|null $commentable
  *
  * @method static CommentFactory factory($count = null, $state = [])
  * @method static CommentsQuery|Comment query()
@@ -60,9 +60,11 @@ class Comment extends Model
 
     // Methods
 
+    /** Переписан на случай использования */
     function delete(): void
     {
         $this->deleted_at = now();
+        $this->save();
     }
 
     function isDeleted(): bool

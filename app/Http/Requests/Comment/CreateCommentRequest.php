@@ -7,6 +7,7 @@ use App\Models\Dtos\Comment\CreateCommentDto;
 use App\Models\Enums\Commentables;
 use App\Models\News;
 use App\Models\User;
+use App\Models\VideoPost;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +15,7 @@ use Illuminate\Validation\Rule;
  * @property int $user_id
  * @property string $text
  * @property int $commentable_id
- * @property class-string<News|Comment> $commentable_type
+ * @property class-string<News|Comment|VideoPost> $commentable_type
  */
 class CreateCommentRequest extends FormRequest
 {
