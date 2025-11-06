@@ -20,10 +20,10 @@ class NewsResource extends JsonResource
             'content' => $n->content,
             'created_at' => $n->created_at->timestamp,
 
-            'author' => $this->whenLoaded('author', fn () => new UserResource($n->author)),
-            'comments' => $this->whenLoaded(
-                'comments',
-                fn () => CommentResource::collection($n->comments)
+            'author' => $this->whenLoaded(
+                'author',
+                fn () => $n->author ? new UserResource($n->author) : null,
+                null
             ),
         ];
     }

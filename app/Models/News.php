@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Interface\HasPaginatingCursor;
 use App\Models\Query\NewsQuery;
+use App\Models\Trait\CursorName;
 use Database\Factories\NewsFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,9 +29,9 @@ use Illuminate\Support\Carbon;
  *
  * @mixin NewsQuery
  */
-class News extends Model
+class News extends Model implements HasPaginatingCursor
 {
-    use HasFactory;
+    use CursorName, HasFactory;
 
     protected $table = 'news';
 

@@ -5,24 +5,25 @@ namespace App\Http\Controllers;
 use App\Http\Requests\News\CreateNewsRequest;
 use App\Http\Resources\NewsResource;
 use App\Repository\News\NewsRepository;
+use Dedoc\Scramble\Attributes\PathParameter;
 use Dedoc\Scramble\Attributes\QueryParameter;
-use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class NewsController extends Controller
 {
     const PER_PAGE = 10;
 
     function __construct(
-        protected NewsRepository $repo,
+        protected NewsRepository $newsRepo,
     )
     {
     }
 
     /** Создать новость */
-    function create(CreateNewsRequest $request)
+    function create(CreateNewsRequest $request): NewsResource
     {
         return new NewsResource(
-            $this->repo->create($request->toDto())
+            $this->newsRepo->create($request->toDto())
         );
     }
 
@@ -33,23 +34,19 @@ class NewsController extends Controller
         required: false,
         type: 'string'
     )]
-    function list(Request $request)
+    function list(): AnonymousResourceCollection
     {
         return NewsResource::collection(
-            $this->repo->publicPaginatedList(static::PER_PAGE, $request->query('cursor'))
+            $this->newsRepo->publicPaginatedList(static::PER_PAGE)
         );
     }
 
-    /**
-     * Показать новость с комментариями
-     *
-     * @param int $id ID новости для показа
-     * @return NewsResource
-     */
+    /** Показать новость */
+    #[PathParameter('id', 'ID новости для показа')]
     function show(int $id): NewsResource
     {
         return new NewsResource(
-            $this->repo->publicShow($id)
+            $this->newsRepo->publicShow($id)
         );
     }
 }

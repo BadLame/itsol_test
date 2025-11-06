@@ -3,10 +3,7 @@
 namespace Tests\Feature\Http\Controllers;
 
 use App\Http\Controllers\NewsController;
-use App\Http\Resources\CommentResource;
 use App\Http\Resources\NewsResource;
-use App\Http\Resources\UserResource;
-use App\Models\Comment;
 use App\Models\News;
 use App\Models\User;
 use Tests\TestCase;
@@ -37,21 +34,19 @@ class NewsControllerTest extends TestCase
             ]);
 
         // Проверить работу пагинации
-        $this->getJson(route('news.list', ['cursor' => $response->json('meta.next_cursor')]))
-            ->dump()
-            ->assertSuccessful() // fixme тут валится
+        $this->getJson(route('news.list', [
+            News::getCursorName() => $response->json('meta.next_cursor'),
+        ]))
+            ->assertSuccessful()
             ->assertJsonFragment([
                 'id' => $shouldBeOnSecondPage->id,
                 'title' => $shouldBeOnSecondPage->title,
             ]);
     }
 
-    function testShowDisplaysNewsWithCommentsAndAnswers()
+    function testShowDisplaysNews()
     {
         $news = News::factory()->withComments(NewsController::PER_PAGE + 1)->create();
-        /** @var Comment $randComment */
-        $randComment = $news->comments->random();
-        $randCommentAns = Comment::factory()->withCommentable($randComment)->create();
 
         $this->getJson(route('news.show', $news))
             ->assertSuccessful()
@@ -63,60 +58,35 @@ class NewsControllerTest extends TestCase
                     'title',
                     'content',
                     'created_at',
-                    'comments' => [
-                        '*' => [
-                            'id',
-                            'is_deleted',
-                            'author',
-                            'answers',
-                            'content',
-                            'created_at',
-                        ],
-                    ],
-                ],
-                'links' => ['first', 'last', 'prev', 'next'],
-                'meta' => ['path', 'per_page', 'next_cursor', 'prev_cursor'],
-            ])
-            ->assertJsonFragment([
-                'id' => $randComment->id,
-                'answers' => [
-                    [
-                        'id' => $randCommentAns->id,
-                        'is_deleted' => $randCommentAns->isDeleted(),
-                        'content' => $randCommentAns->content,
-                        'created_at' => $randCommentAns->created_at->timestamp,
-                        'author' => (new UserResource($randCommentAns->author))->toArray(request()),
-                        'answers' => [],
-                    ],
                 ],
             ]);
     }
 
-    function testDeletedCommentDontShowsAuthorAndContent()
-    {
-        $news = News::factory()->withComments(1)->create();
-        /** @var Comment $randComment */
-        $randComment = $news->comments->random();
-        $randComment->update(['deleted_at' => now()]);
-        $randCommentAns = Comment::factory()->withCommentable($randComment)->create();
-
-        $this->getJson(route('news.show', $news))
-            ->assertSuccessful()
-            ->assertJsonFragment([
-                'id' => $randComment->id,
-                'is_deleted' => true,
-                'author' => null,
-                'content' => '',
-                'answers' => [
-                    (new CommentResource($randCommentAns->load('author')))->toArray(request()),
-                ],
-            ]);
-    }
+//    function testDeletedCommentDontShowsAuthorAndContent() // fixme move to another test class
+//    {
+//        $news = News::factory()->withComments(1)->create();
+//        /** @var Comment $randComment */
+//        $randComment = $news->comments->random();
+//        $randComment->update(['deleted_at' => now()]);
+//        $randCommentAns = Comment::factory()->withCommentable($randComment)->create();
+//
+//        $this->getJson(route('news.show', $news))
+//            ->assertSuccessful()
+//            ->assertJsonFragment([
+//                'id' => $randComment->id,
+//                'is_deleted' => true,
+//                'author' => null,
+//                'content' => '',
+//                'answers' => [
+//                    (new CommentResource($randCommentAns->load('author')))->toArray(request()),
+//                ],
+//            ]);
+//    }
 
     function testCreateCreatesNews()
     {
         $request = [
-            'user_id' => (int)User::factory()->create()->id,
+            'user_id' => User::factory()->create()->id,
             'title' => fake()->colorName(),
             'text' => fake()->text(),
         ];

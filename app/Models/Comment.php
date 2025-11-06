@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Interface\HasPaginatingCursor;
 use App\Models\Query\CommentsQuery;
+use App\Models\Trait\CursorName;
 use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,9 +31,9 @@ use Illuminate\Support\Carbon;
  * @method static CommentFactory factory($count = null, $state = [])
  * @method static CommentsQuery|Comment query()
  */
-class Comment extends Model
+class Comment extends Model implements HasPaginatingCursor
 {
-    use HasFactory;
+    use CursorName, HasFactory;
 
     protected $fillable = [
         'content',
