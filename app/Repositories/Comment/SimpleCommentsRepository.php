@@ -37,12 +37,13 @@ class SimpleCommentsRepository implements CommentsRepository
 
     function loadRelations(Comment &$comment, array $relations): Comment
     {
-        $comment->load($relations);
-        return $comment;
+        return $comment->load($relations);
     }
 
     protected function query(): CommentsQuery
     {
-        return Comment::query();
+        /** @var CommentsQuery $query */
+        $query = Comment::query()->withTrashed();
+        return $query;
     }
 }

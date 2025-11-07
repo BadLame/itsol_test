@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -31,7 +32,7 @@ use Illuminate\Support\Carbon;
  */
 class Comment extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     // Дефолтные отношения, которые нужны для отображения пользователю
     const PUBLIC_RELATIONS = ['author'];
@@ -56,20 +57,6 @@ class Comment extends Model
     function commentable(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    // Methods
-
-    /** Переписан на случай использования */
-    function delete(): void
-    {
-        $this->deleted_at = now();
-        $this->save();
-    }
-
-    function isDeleted(): bool
-    {
-        return !is_null($this->deleted_at);
     }
 
     // Misc
