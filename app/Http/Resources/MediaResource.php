@@ -14,7 +14,7 @@ class MediaResource extends JsonResource
         $vid = $this->resource;
 
         return [
-            'alt' => $vid->filename,
+            'alt' => $vid->getBasenameAttribute(),
             'url' => $vid->getUrl(),
         ];
     }

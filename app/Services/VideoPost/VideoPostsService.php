@@ -2,6 +2,8 @@
 
 namespace App\Services\VideoPost;
 
+use App\Models\Dtos\VideoPost\CreateVideoPostDto;
+use App\Models\VideoPost;
 use App\Repositories\VideoPost\VideoPostsRepository;
 
 abstract class VideoPostsService
@@ -11,4 +13,6 @@ abstract class VideoPostsService
     )
     {
     }
+
+    abstract function create(CreateVideoPostDto $dto): VideoPost;
 }

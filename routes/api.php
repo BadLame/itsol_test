@@ -20,4 +20,5 @@ Route::name('comments.')->prefix('/comments/')->group(function () {
 
 Route::name('video_posts.')->prefix('/video_posts/')->group(function () {
     Route::get('/', [VideoPostsController::class, 'list'])->name('list');
+    Route::post('/', [VideoPostsController::class, 'create'])->name('create');
 });

@@ -35,7 +35,9 @@ class VideoPost extends Model implements MediableInterface
 {
     use HasFactory, Mediable;
 
+    const PUBLIC_RELATIONS = ['author', 'video'];
     const VIDEO_TAG = 'video';
+    const VIDEO_DISK = 'video_posts';
 
     protected $fillable = [
         'title',

@@ -18,5 +18,5 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions
             ->render(fn (UnauthorizedException $e) => response()->json($e->getMessage(), 403))
-            ->render(fn (NotFoundHttpException $e) => response()->json(['message' => 'Not found'], 404));
+            ->render(fn (NotFoundHttpException $e) => response()->json(['message' => 'Not found'], 404)); // fixme
     })->create();
